@@ -209,7 +209,7 @@ Really helpful when using evil
 [[https://github.com/fsharp/emacs-fsharp-mode][repo]]
 *** fsharp-mode
 #+BEGIN_SRC emacs-lisp
-  (package-insatall 'fsharp-mode)
+  (package-install 'fsharp-mode)
 
   (require 'fsharp-mode)
 #+END_SRC
