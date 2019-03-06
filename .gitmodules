@@ -1,0 +1,3 @@
+[submodule "ktlint"]
+	path = ktlint
+	url = https://github.com/shyiko/ktlint.git

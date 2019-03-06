@@ -13,7 +13,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (flycheck-irony irony projectile-variable platformio-mode powerline flyspell-popup flyspell-correct-popup flyspell-lazy jedi flycheck nlinum org-bullets doom-themes))))
+    (flycheck-kotlin flycheck-irony irony projectile-variable platformio-mode powerline flyspell-popup flyspell-correct-popup flyspell-lazy jedi flycheck nlinum org-bullets doom-themes))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

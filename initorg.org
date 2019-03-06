@@ -93,6 +93,21 @@ Binding for popup
   (setq make-backup-files nil)
   (setq auto-save-default nil)
 #+END_SRC
+** Highlight indendation
+#+BEGIN_SRC emacs-lisp
+  (package-install 'highlight-indentation)
+#+END_SRC
+** Company mode
+[[https://company-mode.github.io][website]]
+#+BEGIN_SRC emacs-lisp
+  (package-install 'company)
+
+  (require 'company)
+
+  (add-hook 'after-init-hook 'global-company-mode)
+
+  (setq company-idle-delay 0)
+#+END_SRC
 * Flycheck
 On-the-fly syntax checking extension for Emacs
 [[http://www.flycheck.org/en/latest/][Link]]
@@ -204,6 +219,19 @@ Really helpful when using evil
   (package-install 'kotlin-mode)
 
   (require 'kotlin-mode)
+
+  (setq kotlin-tab-width 4)
+#+END_SRC
+*** Flycheck Kotlin
+#+BEGIN_SRC emacs-lisp
+  (package-install 'flycheck-kotlin)
+
+  (setq flycheck-kotlin-ktlint-executable "~/.emacs.d/ktlint")
+
+  (eval-after-load 'flyckeck
+      (progn
+        (require 'flycheck-kotlin)
+        (flycheck-kotlin-setup)))
 #+END_SRC
 ** F#
 [[https://github.com/fsharp/emacs-fsharp-mode][repo]]
@@ -216,6 +244,17 @@ Really helpful when using evil
 *** Highlight indentation
 #+BEGIN_SRC emacs-lisp
   (add-hook 'fsharp-mode-hook 'highlight-indentation-mode)
+#+END_SRC
+*** Intellisense
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'company-transformers 'company-sort-prefer-same-case-prefix)
+
+  (setq fsharp-ac-intellisense-enabled t)
+  (setq fsharp-use-popup t)
+#+END_SRC
+*** F# doc strings
+#+BEGIN_SRC emacs-lisp
+  (setq fsharp-doc-idle-delay 0.1)
 #+END_SRC
 * Org Mode
 ** org-bullets mode
