@@ -1,0 +1,240 @@
+Brandon Waller Emacs Init 
+
+* General Emacs Settings
+** Title 
+   #+BEGIN_SRC emacs-lisp
+   (setq frame-title-format"Emacs")
+   #+END_SRC
+** Package Repositories
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                           ("melpa" . "https://melpa.org/packages/")))
+  (unless package-archive-contents (package-refresh-contents))
+  (package-initialize)
+#+END_SRC
+** Evil Mode
+Vim keybindings, and editor in emacs
+[[https://github.com/emacs-evil/evil][Repo]]
+[[https://www.emacswiki.org/emacs/Evil][Wiki]]
+#+BEGIN_SRC emacs-lisp
+  (unless (package-installed-p 'evil)
+    (package-install 'evil))
+
+  (require 'evil)
+  (evil-mode 1)
+#+END_SRC
+
+** Theme 
+doom-peacock 
+[[https://github.com/hlissner/emacs-doom-themes][repo]]
+#+BEGIN_SRC emacs-lisp
+  (require 'doom-themes)
+  (load-theme 'doom-one t)
+
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config)
+#+END_SRC
+** Line Numbers
+#+BEGIN_SRC emacs-lisp
+  (global-nlinum-mode t)
+#+END_SRC
+** Interactively Do Things Mode
+ #+BEGIN_SRC emacs-lisp
+   (require 'ido)
+   (ido-mode t)
+ #+END_SRC
+** Electric Pair
+#+BEGIN_SRC emacs-lisp
+  (electric-pair-mode 1)
+#+END_SRC
+** Menu Settings
+#+BEGIN_SRC emacs-lisp
+  (menu-bar-mode 0)
+  (tool-bar-mode 0)
+  (scroll-bar-mode 0)
+#+END_SRC
+** Highlight Matching Delimiters
+#+BEGIN_SRC emacs-lisp
+  (show-paren-mode)
+  (setq show-paren-delay 0)
+#+END_SRC
+** Tab Mode
+#+BEGIN_SRC emacs-lisp
+  (setq indent-tabs-mode nil)
+#+END_SRC
+** y/n Confirm
+#+BEGIN_SRC emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+** Smooth Scrolling
+[[https://www.emacswiki.org/emacs/SmoothScrolling][link]]
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-step 1)
+#+END_SRC
+** Flyspell
+Spell checking 
+[[https://www.emacswiki.org/emacs/FlySpell][Wiki]]
+#+BEGIN_SRC emacs-lisp
+  (require 'flyspell)
+  (flyspell-mode +1)
+  (add-hook 'text-mode-hook 'flyspell-popup-auto-correct-mode)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+#+END_SRC
+Binding for popup
+[[https://github.com/xuchunyang/flyspell-popup][link]]
+#+BEGIN_SRC emacs-lisp
+  (define-key flyspell-mode-map (kbd "C-,") #'flyspell-popup-correct)
+  (add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
+#+END_SRC
+** Disable autosave files
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+#+END_SRC
+* Flycheck
+On-the-fly syntax checking extension for Emacs
+[[http://www.flycheck.org/en/latest/][Link]]
+#+BEGIN_SRC emacs-lisp
+  (global-flycheck-mode)
+  ;; disable elisp
+  (with-eval-after-load 'flycheck
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+#+END_SRC
+Additional Config Requirements
+SH:
+#+BEGIN_SRC sh
+  sudo pip install virtualenv
+#+END_SRC
+Emacs:
+#+BEGIN_SRC 
+M-x jedi:install-server
+#+END_SRC
+* Language Specific Settings
+** C/C++ 
+*** 4 spaces 
+#+BEGIN_SRC emacs-lisp
+  (setq c-basic-offset 4)
+#+END_SRC 
+*** Linux Style
+#+BEGIN_SRC emacs-lisp
+  (setq c-default-style "linux")
+#+END_SRC
+*** Long Name Setting
+#+BEGIN_SRC emacs-lisp
+  (defun indent-setting ()
+    (c-set-offset 'arglist-intro '+))
+  (add-hook 'java-mode-hook 'indent-setting)
+#+END_SRC
+** Python
+*** Jedi Auto Complete
+[[https://github.com/tkf/emacs-jedi][Repo]]
+#+BEGIN_SRC emacs-lisp
+  (use-package jedi
+    :ensure t
+    :init
+    (add-hook 'python-mode-hook 'jedi:setup)
+    (add-hook 'python-mode-hook 'jedi:ac-setup))
+#+END_SRC
+*** Jedi Documentation Binding C-.
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'python
+    (define-key python-mode-map (kbd "C-.") 'jedi:show-doc))
+#+END_SRC
+** Verilog
+*** Disable Verilog minibuffer when pressing escape.
+Really helpful when using evil
+[[https://emacs.stackexchange.com/questions/38468/disable-autocompletion-abbreviation-in-verilog-mode?utm_medium%3Dorganic&utm_source%3Dgoogle_rich_qa&utm_campaign%3Dgoogle_rich_qa][link]]
+#+BEGIN_SRC emacs-lisp
+  (defun my-verilog-setup ()
+      (clear-abbrev-table verilog-mode-abbrev-table))
+  (add-hook 'verilog-mode-hook #'my-verilog-setup)
+#+END_SRC
+*** Disable auto new line
+[[https://stackoverflow.com/questions/27098826/how-to-disable-auto-new-line-in-verilog-mode-in-emacs?utm_medium%3Dorganic&utm_source%3Dgoogle_rich_qa&utm_campaign%3Dgoogle_rich_qa][link]]
+#+BEGIN_SRC emacs-lisp
+(setq verilog-auto-newline nil)
+#+END_SRC
+** VHDL
+*** IEEE Style
+#+BEGIN_SRC emacs-lisp
+  (defun my-vhdl-mode-hook()
+    (vhdl-set-style "IEEE")
+    )
+  (add-hook 'vhdl-mode-hook 'my-vhdl-mode-hook)
+#+END_SRC
+*** Enable Stutter Mode
+#+BEGIN_SRC emacs-lisp
+  (setq vhdl-stutter-mode t)
+#+END_SRC
+** PlatformIO
+   [[https://github.com/ZachMassia/platformio-mode][link]]
+#+BEGIN_SRC emacs-lisp 
+  (require 'platformio-mode)
+
+  ;; Add the required company backend.
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-irony))
+
+  ;; Enable irony for all c++ files, and platformio-mode only
+  ;; when needed (platformio.ini present in project root).
+  (add-hook 'c++-mode-hook (lambda ()
+                             (irony-mode)
+                             (irony-eldoc)
+                             (platformio-conditionally-enable)))
+
+  ;; Use irony's completion functions.
+  (add-hook 'irony-mode-hook
+            (lambda ()
+              (define-key irony-mode-map [remap completion-at-point]
+                'irony-completion-at-point-async)
+
+              (define-key irony-mode-map [remap complete-symbol]
+                'irony-completion-at-point-async)
+
+              (irony-cdb-autosetup-compile-options)))
+              
+  ;; Setup irony for flycheck.
+  (add-hook 'flycheck-mode-hook 'flycheck-irony-setup)
+#+END_SRC
+** Kotlin
+*** kotlin-mode
+#+BEGIN_SRC emacs-lisp
+  (package-install 'kotlin-mode)
+
+  (require 'kotlin-mode)
+#+END_SRC
+** F#
+[[https://github.com/fsharp/emacs-fsharp-mode][repo]]
+*** fsharp-mode
+#+BEGIN_SRC emacs-lisp
+  (package-insatll 'fsharp-mode)
+
+  (require 'fsharp-mode)
+#+END_SRC
+*** Highlight indentation
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'fsharp-mode-hook 'highlight-indentation-mode)
+#+END_SRC
+* Org Mode
+** org-bullets mode
+Proper bullets in org mode
+#+BEGIN_SRC emacs-lisp
+  (require 'org-bullets)
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+#+END_SRC
+
+* Bottom Bar
+** Time
+#+BEGIN_SRC emacs-lisp
+  (display-time-mode 1)
+#+END_SRC
+** Powerline
+[[https://github.com/milkypostman/powerline][link]]
+#+BEGIN_SRC emacs-lisp
+  (require 'powerline)
+  (powerline-center-evil-theme)
+
+#+END_SRC
+

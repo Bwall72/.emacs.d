@@ -1,0 +1,14 @@
+auto-save-list/
+ido.last
+session*
+*~
+\#*
+ac-comphist.dat
+eshell/
+.\#*
+.python-environments*
+initorg.el
+irony/
+abbrev_defs
+elpa/
+
